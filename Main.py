@@ -2,40 +2,73 @@ from functions import *
 
 clear_screen()
 
+logged_in = False
+
 print("Bem-Vindo ao Firefly Rescue")
 
 while True:
     print("""
-          1-Cadastrar Socorrista
-          2-Avaliar Situação
-          3-Escolher Equipamentos
-          4-Forma de Regaste
-          5-Selecionar Equipe
-          6-Finalizar Cenário
-          7-Sobre o Projeto
-          8-Sair
-          """)
-    opcao = int(input("Selecione uma opção de 1 a 8: "))
+      1- Sobre o Projeto
+      2- Cadastrar Socorrista
+      3- Acessar Menu Principal
+      """)
+    opcao = int(input("Selecione uma opção de 1 a 3: "))
     match opcao:
         case 1:
-            nome = input("Nome: ")
-            rm = input("RM: ")
-            cadastro_socorrista(nome, rm)
-        case 2:
-            avaliar_situacao()
-        case 3:
-            ...
-        case 4:
-            ...
-        case 5:
-            ...
-        case 6:
-            ...
-        case 7:
             sobre_projeto()
-        case 8:
+        case 2:
+            name = input("Nome: ")
+            rm = input("RM: ")    
+            logged_in = cadastro_socorrista(name, rm)
+        case 3:
+            if logged_in == True:
+                print("Acessando Menu Principal ...")
+                break
+            else:
+                print("Se cadastre como socorrista primeiro.")
+        case _:
+            print("Apenas de 1 a 3.")
+    input("Pressione Enter para continuar... ")
+
+while True:
+    print(("-" * 20) + " Menu Principal " + ("-" * 20))
+    print("""
+          1-Avaliar Situação
+          2-Escolher Equipamentos
+          3-Forma de Regaste
+          4-Selecionar Equipe
+          5-Finalizar Cenário
+          6-Sair
+          """)
+    print("-" * 50)
+    opcao = int(input("Selecione uma opção de 1 a 6: "))
+
+    match opcao:
+
+        case 1:
+            pontuacao_maxima, local_sorteado = avaliar_situacao()
+
+        case 2:
+            pontos_equipamentos = escolher_equipamentos()
+
+        case 3:
+            if local_sorteado != "":
+                pontos_resgate = forma_resgate(local_sorteado)
+
+            else:
+                print("Avalie a situação primeiro.")
+
+        case 4:
+            pontos_equipe = escolher_equipe()
+
+        case 5:
+            pontuacao_final = pontuacao(pontuacao_maxima, pontos_equipamentos, pontos_equipe, pontos_resgate)
+            finalizar_cenario(pontuacao_final, pontuacao_maxima)
+
+        case 6:
             print("Encerrando ...")
             break
+
         case _:
-            print("Apenas de 1 a 8.")
+            print("Apenas opções de 1 a 6.")
     input("Pressione Enter para continuar... ")
