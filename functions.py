@@ -60,161 +60,159 @@ def avaliar_situacao() ->tuple[int, str]:
     print(f"Localização: {local_sorteado}")
     print(f"Pontuação máxima possível: {pontuacao_maxima}")
 
-    return pontuacao_maxima, local_sorteado
+    return pontuacao_maxima, local_sorteado, estado_sorteado, clima_sorteado, vitimas_sorteadas
 
-def escolher_equipamentos() -> int:
-
-    print("\n=== ESCOLHA DOS EQUIPAMENTOS ===")
-    print("1 - LEO (Low Earth Orbital)")
-    print("2 - Drone sem LEO")
+def escolher_equipamentos(estado_vitima: str, clima: str) -> int:
+    print("=== EQUIPAMENTOS ===")
+    print("1 - LEO")
+    print("2 - Drone")
     print("3 - Ambos")
 
-    equipamento = int(input("Escolha uma opção: "))
+    equipamentos = int(input("Escolha: "))
+    pontos = 0
 
-    match equipamento:
-
+    match equipamentos:
         case 1:
-            print("Você escolheu utilizar apenas o LEO.")
-            print("Menor precisão no resgate.")
-            pontuacao_equipamentos = 20
+            print("LEO utilizado com sucesso!")
+            pontos = 20
 
         case 2:
-            print("Você escolheu utilizar Drone sem LEO.")
-            print("Precisão intermediária no resgate.")
-            pontuacao_equipamentos = 50
+            print("Drone Utilizado com sucesso!")
+            pontos = 50
+            if clima == "Tempestade":
+                print("Tempestade! Drone perdeu sinal.")
+                pontos -= 70
 
         case 3:
-            print("Você escolheu utilizar ambos os equipamentos.")
-            print("Máxima eficiência no resgate.")
-            pontuacao_equipamentos = 100
+            print("Drone e LEO utilizados com sucesso!")
+            pontos = 100
+            if estado_vitima == "Fratura Leve":
+                print("Uso excessivo de recursos!")
+                pontos -= 150
 
         case _:
-            print("\nOpção inválida.")
-            pontuacao_equipamentos = 0
+            pontos = 0
 
-    print(f"Pontuação obtida pelos equipamentos: {pontuacao_equipamentos}")
+    print(f"Pontuação equipamentos: {pontos}")
+    return pontos
 
-    return pontuacao_equipamentos
 
-def escolher_equipe() -> int:
-
-    print("=== ESCOLHA DA EQUIPE ===")
+def escolher_equipe(estado_vitima: str, quantidade_vitimas: int) -> int:
+    print("=== EQUIPE ===")
     print("1 - UBS")
     print("2 - USA")
 
-    equipe = int(input("Escolha uma equipe: "))
+    equipe = int(input("Escolha: "))
+    pontos = 0
+
+    gravidade_real = estado_vitima
+    if quantidade_vitimas == 3:
+        gravidade_real = "Risco de Vida"
 
     match equipe:
-
         case 1:
-            print("Equipe UBS selecionada.")
-            print("Atendimento básico.")
-            pontuacao_equipe = 50
-            equipe_escolhida = "UBS"
+            print("UBS selecionada")
+            pontos = 50
+
+            if gravidade_real == "Risco de Vida":
+                print("Equipe insuficiente!")
+                pontos -= 70
 
         case 2:
-            print("Equipe USA selecionada.")
-            print("Atendimento avançado.")
-            pontuacao_equipe = 100
-            equipe_escolhida = "USA"
+            print("USA selecionada")
+            pontos = 100
+
+            if gravidade_real == "Fratura Leve" and quantidade_vitimas == 1:
+                print("Uso excessivo de equipe!")
+                pontos -= 120
 
         case _:
-            print("Opção inválida.")
-            pontuacao_equipe = 0
-            equipe_escolhida = "Nenhuma"
+            pontos = 0
 
-    print(f"Equipe escolhida: {equipe_escolhida}")
-    print(f"Pontuação da equipe: {pontuacao_equipe}")
-
-    return pontuacao_equipe
+    print(f"Pontuação equipe: {pontos}")
+    return pontos
 
 
-def forma_resgate(localizacao_sorteada: str) -> int:
-
-    print("=== FORMA DE RESGATE ===")
-    print("1 - Aérea")
+def forma_resgate(local: str, clima: str) -> int:
+    print("=== RESGATE ===")
+    print("1 - Aéreo")
     print("2 - Terrestre")
-    print("3 - Marítima")
+    print("3 - Marítimo")
 
-    opcao = int(input("Escolha a forma de resgate: "))
+    resgate = int(input("Escolha: "))
+    pontos = 0
 
-    pontuacao_resgate = 0
+    match resgate:
+        #SE O LOCAL FOR PRAIA
+        case 3 if local == "Praia":
+            print("Resgate marítimo enviado ao local.")
+            pontos = 100
 
-    match opcao:
+        case 2 if local == "Praia":
+            print("Resgate terrestre enviado ao local.")
+            pontos = 50
 
-        # PRAIA
-        case 3 if localizacao_sorteada == "Praia":
-            print("Resgate marítimo foi a melhor escolha.")
-            pontuacao_resgate = 100
+        case 1 if local == "Praia":
+            print("Resgate aéreo enviado ao local.")
+            pontos = -20
 
-        case 2 if localizacao_sorteada == "Praia":
-            print("\nResgate terrestre foi razoável.")
-            pontuacao_resgate = 50
+        #SE O LOCAL FOR FLORESTA
+        case 2 if local == "Floresta":
+            print("Resgate terrestre enviado ao local.")
+            pontos = 100
 
-        case 1 if localizacao_sorteada == "Praia":
-            print("Resgate aéreo não foi a melhor escolha.")
-            pontuacao_resgate = 20
+        case 1 if local == "Floresta":
+            print("Resgate aéreo enviado ao local.")
+            pontos = 50
 
-        # FLORESTA
-        case 2 if localizacao_sorteada == "Floresta":
-            print("Resgate terrestre foi a melhor escolha.")
-            pontuacao_resgate = 100
+        case 3 if local == "Floresta":
+            print("Resgate marítimo inválido!")
+            pontos = -20
 
-        case 1 if localizacao_sorteada == "Floresta":
-            print("Resgate aéreo foi razoável.")
-            pontuacao_resgate = 50
+        #SE O LOCAL FOR MONTANHA
+        case 1 if local == "Montanha":
+            print("Resgate aéreo enviado ao local.")
+            pontos = 100
 
-        case 3 if localizacao_sorteada == "Floresta":
-            print("Resgate marítimo não faz sentido nesse local.")
-            pontuacao_resgate = 20
+        case 2 if local == "Montanha":
+            print("Resgate terrestre enviado ao local.")
+            pontos = 50
 
-        # MONTANHA
-        case 1 if localizacao_sorteada == "Montanha":
-            print("Resgate aéreo foi a melhor escolha.")
-            pontuacao_resgate = 100
-
-        case 2 if localizacao_sorteada == "Montanha":
-            print("Resgate terrestre foi razoável.")
-            pontuacao_resgate = 50
-
-        case 3 if localizacao_sorteada == "Montanha":
-            print("Resgate marítimo não foi adequado.")
-            pontuacao_resgate = 20
+        case 3 if local == "Montanha":
+            print("Resgate marítimo inválido!")
+            pontos = -20
 
         case _:
-            print("Opção inválida.")
-            pontuacao_resgate = 0
+            pontos = 0
 
-    print(f"Pontuação da forma de resgate: {pontuacao_resgate}")
+    if clima == "Tempestade" and resgate == 1:
+        print("Tempestade! Resgate aéreo comprometido!")
+        pontos -= 50
 
-    return pontuacao_resgate
-
-
-def pontuacao(pontuacao_maxima: int, pontuacao_equipamentos: int, pontuacao_equipe: int, pontuacao_resgate: int) -> float:
-    desempenho = (pontuacao_equipamentos + pontuacao_equipe + pontuacao_resgate) / 3
-    pontuacao_final = pontuacao_maxima * (desempenho / 100)
-    return pontuacao_final
+    print(f"Pontuação resgate: {pontos}")
+    return pontos
 
 
-def finalizar_cenario(pontuacao_final: float, pontuacao_maxima: int) -> None:
+def pontuacao_final(maxima, equip, equipe, resgate):
+    desempenho = (equip + equipe + resgate) / 3
+    return maxima * (desempenho / 100)
 
-    print("=== RESULTADO FINAL ===")
 
-    print(f"Pontuação máxima: {pontuacao_maxima}")
+def resultado(final, maxima):
+    print("=== RESULTADO ===")
+    print(f"Máxima: {maxima}")
+    print(f"Final: {final:.1f}")
 
-    print(f"Pontuação obtida: {pontuacao_final:.1f}")
+    perc = (final / maxima) * 100
+    print(f"Desempenho: {perc:.1f}%")
 
-    porcentagem = (pontuacao_final / pontuacao_maxima) * 100
-
-    print(f"Desempenho: {porcentagem:.1f}%")
-
-    if porcentagem >= 90:
+    if perc >= 90:
         print("Excelente trabalho! Todas as vítimas foram salvas com máxima eficiência.")
 
-    elif porcentagem >= 70:
+    elif perc >= 70:
         print("Bom trabalho! O resgate foi realizado com poucos problemas.")
 
-    elif porcentagem >= 50:
+    elif perc >= 50:
         print("Resgate concluído, mas houve dificuldades durante a operação.")
 
     else:
