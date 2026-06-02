@@ -121,8 +121,8 @@ def escolher_equipamentos(estado_vitima: str, clima: str, vitimas_sorteadas: int
 
 def escolher_equipe(estado_vitima: str, quantidade_vitimas: int) -> int:
     print("=== EQUIPE ===")
-    print("1 - UBS")
-    print("2 - USA")
+    print("1 - UBS (Unidade Básica de Saúde)")
+    print("2 - USA (Unidade Avançada de Saúde)")
 
     equipe = int(input("Escolha: "))
     pontos = 0
@@ -171,7 +171,7 @@ def forma_resgate(local: str, clima: str) -> int:
     resgate = int(input("Escolha: "))
     pontos = 0
     
-    #lOCAL
+    #LOCAL
     if local == "Praia":
         melhor = 3 if clima != "Tempestade" else 2
 
@@ -236,9 +236,5 @@ def resultado(final: float, maxima: int) ->float:
 
 def sobre_projeto() ->None:
     print("""
-        Este projeto propõe o uso de Inteligência Artificial integrada a satélites para analisar cenários de resgate, considerando fatores como clima, localização e condições das vítimas. 
-        A utilização de satélites LEO permite comunicação e coleta de dados mesmo em regiões sem conexão. 
-        O sistema se baseia no Processo de Decisão de Markov para prever e orientar as melhores ações em cada situação. 
-        Como prova de conceito (PDK), foi desenvolvido um modelo simplificado que simula essas decisões com base em variáveis como tempo, equipe e ambiente. 
-        Dessa forma, o projeto demonstra como tecnologias avançadas podem otimizar operações de resgate em cenários críticos.
+       O projeto propõe o uso de Análise Preditiva e o Processo de Decisão de Markov (MDP) para otimizar operações de resgate em cenários críticos. Tecnologias garantem comunicação e coleta de dados mesmo em regiões sem conexão, alimentando o algoritmo em tempo real. Como prova de conceito, foi desenvolvido um modelo simplificado que simula decisões considerando 5 variáveis: condição da vítima, tempo de resgate, localização, meteorologia e equipe disponível.
         """)

@@ -54,9 +54,9 @@ while True:
           
           2-Escolher Equipamentos
           
-          3-Forma de Regaste
+          3-Selecionar Equipe
           
-          4-Selecionar Equipe
+          4-Forma de Regaste
           
           5-Finalizar Cenário
           
@@ -77,14 +77,14 @@ while True:
                 print("Avalie a situação primeiro.")
 
         case 3:
-            if local_sorteado != "" and clima != "":
-                pontos_resgate = forma_resgate(local_sorteado, clima)
+            if estado != "" and vitimas != 0:
+                pontos_equipe = escolher_equipe(estado, vitimas)
             else:
                 print("Avalie a situação primeiro.")
 
         case 4:
-            if estado != "" and vitimas != 0:
-                pontos_equipe = escolher_equipe(estado, vitimas)
+            if local_sorteado != "" and clima != "":
+                pontos_resgate = forma_resgate(local_sorteado, clima)
             else:
                 print("Avalie a situação primeiro.")
 
