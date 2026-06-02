@@ -18,7 +18,9 @@ print("Bem-Vindo ao Firefly Rescue")
 while True:
     print("""
       1- Sobre o Projeto
+      
       2- Cadastrar Socorrista
+      
       3- Acessar Menu Principal
       """)
     opcao = int(input("Selecione uma opção de 1 a 3: "))
@@ -26,10 +28,10 @@ while True:
         case 1:
             sobre_projeto()
         case 2:
-            name = input("Nome: ")
+            name = input("Nome: ").capitalize()
             while len(name) < 3:
                 print("Nome precisa ter pelo menos 3 letras.")
-                name = input("Nome: ")
+                name = input("Nome: ").capitalize()
             rm = input("Rm: ")
             while len(rm) != 6:
                 print("RM precisa ter 6 dígitos.")    
@@ -49,10 +51,15 @@ while True:
     print(("-" * 20) + " Menu Principal " + ("-" * 20))
     print("""
           1-Avaliar Situação
+          
           2-Escolher Equipamentos
+          
           3-Forma de Regaste
+          
           4-Selecionar Equipe
+          
           5-Finalizar Cenário
+          
           6-Sair
           """)
     print("-" * 50)
@@ -65,7 +72,7 @@ while True:
 
         case 2:
             if estado != "" and clima != "":
-                pontos_equipamentos = escolher_equipamentos(estado, clima)
+                pontos_equipamentos = escolher_equipamentos(estado, clima, vitimas)
             else:
                 print("Avalie a situação primeiro.")
 

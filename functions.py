@@ -54,6 +54,9 @@ def avaliar_situacao() ->tuple[int, str]:
         case "Montanha":
             pontuacao_maxima += 100
 
+    if pontuacao_maxima > 300:
+        pontuacao_maxima = 300
+
     print("Analisando a situação ...")
     print(f"Clima: {clima_sorteado}")
     print(f"Vítimas: Quantidade de vítimas: {vitimas_sorteadas}, Estado da vítima: {estado_sorteado}")
@@ -62,7 +65,7 @@ def avaliar_situacao() ->tuple[int, str]:
 
     return pontuacao_maxima, local_sorteado, estado_sorteado, clima_sorteado, vitimas_sorteadas
 
-def escolher_equipamentos(estado_vitima: str, clima: str) -> int:
+def escolher_equipamentos(estado_vitima: str, clima: str, vitimas_sorteadas: int) -> int:
     print("=== EQUIPAMENTOS ===")
     print("1 - LEO")
     print("2 - Drone")
@@ -73,29 +76,48 @@ def escolher_equipamentos(estado_vitima: str, clima: str) -> int:
 
     match equipamentos:
         case 1:
-            print("LEO utilizado com sucesso!")
-            pontos = 20
+            if vitimas_sorteadas > 1: 
+                print(f"LEO Utilizado com sucesso! As {vitimas_sorteadas} vítimas com {estado_vitima} possuem sinal para comunicação")
+            else:
+                print(f"LEO Utilizado com sucesso! A {vitimas_sorteadas} vítima com {estado_vitima} possui sinal para comunicação")
+
+            if clima == "Tempestade":
+                pontos = 100
+            else:
+                pontos = 40
 
         case 2:
-            print("Drone Utilizado com sucesso!")
-            pontos = 50
+            if vitimas_sorteadas > 1: 
+                print(f"Drone Utilizado com sucesso! Foram localizadas as {vitimas_sorteadas} vítimas com {estado_vitima}")
+            else:
+                print(f"Drone Utilizado com sucesso! Foi localizada {vitimas_sorteadas} vítima com {estado_vitima}")
+
             if clima == "Tempestade":
-                print("Tempestade! Drone perdeu sinal.")
-                pontos -= 70
+                print("Tempestade! Drone prejudicado.")
+                pontos = -30
+
+            else:
+                if estado_vitima == "Fratura Leve" and quantidade_vitimas == 1:
+                    pontos = 100
+                else:
+                    pontos = 80
 
         case 3:
-            print("Drone e LEO utilizados com sucesso!")
-            pontos = 100
-            if estado_vitima == "Fratura Leve":
-                print("Uso excessivo de recursos!")
-                pontos -= 150
+            if vitimas_sorteadas > 1: 
+                print(f"Drone e LEO Utilizados com sucesso! Foram localizadas as {vitimas_sorteadas} vítimas com {estado_vitima} e agora elas possuem sinal para comunicação")
+            else:
+                print(f"Drone e LEO Utilizados com sucesso! Foi localizada {vitimas_sorteadas} vítima com {estado_vitima} e agora ela possui sinal para comunicação")
+
+            if estado_vitima == "Fratura Leve" and quantidade_vitimas == 1:
+                pontos = -30
+            else:
+                pontos = 100
 
         case _:
             pontos = 0
 
     print(f"Pontuação equipamentos: {pontos}")
     return pontos
-
 
 def escolher_equipe(estado_vitima: str, quantidade_vitimas: int) -> int:
     print("=== EQUIPE ===")
@@ -105,26 +127,33 @@ def escolher_equipe(estado_vitima: str, quantidade_vitimas: int) -> int:
     equipe = int(input("Escolha: "))
     pontos = 0
 
-    gravidade_real = estado_vitima
     if quantidade_vitimas == 3:
         gravidade_real = "Risco de Vida"
+    else:
+        gravidade_real = estado_vitima
 
     match equipe:
         case 1:
             print("UBS selecionada")
-            pontos = 50
 
-            if gravidade_real == "Risco de Vida":
+            if gravidade_real == "Fratura Leve":
+                pontos = 100  
+            elif gravidade_real == "Fratura Exposta":
+                pontos = 50
+            else:
                 print("Equipe insuficiente!")
-                pontos -= 70
+                pontos = -20  
 
         case 2:
             print("USA selecionada")
-            pontos = 100
 
-            if gravidade_real == "Fratura Leve" and quantidade_vitimas == 1:
+            if gravidade_real == "Risco de Vida":
+                pontos = 100  
+            elif gravidade_real == "Fratura Exposta":
+                pontos = 70
+            else:
                 print("Uso excessivo de equipe!")
-                pontos -= 120
+                pontos = -20  
 
         case _:
             pontos = 0
@@ -141,64 +170,51 @@ def forma_resgate(local: str, clima: str) -> int:
 
     resgate = int(input("Escolha: "))
     pontos = 0
+    
+    #lOCAL
+    if local == "Praia":
+        melhor = 3 if clima != "Tempestade" else 2
 
-    match resgate:
-        #SE O LOCAL FOR PRAIA
-        case 3 if local == "Praia":
-            print("Resgate marítimo enviado ao local.")
-            pontos = 100
+    elif local == "Floresta":
+        melhor = 2
 
-        case 2 if local == "Praia":
-            print("Resgate terrestre enviado ao local.")
-            pontos = 50
+    elif local == "Montanha":
+        melhor = 1 if clima != "Tempestade" else 2
 
-        case 1 if local == "Praia":
-            print("Resgate aéreo enviado ao local.")
-            pontos = -20
+    #PONTUACAO
+    if resgate == melhor:
+        pontos = 100
+    elif resgate in [1, 2, 3]:
+        pontos = 50
+    else:
+        pontos = 0
 
-        #SE O LOCAL FOR FLORESTA
-        case 2 if local == "Floresta":
-            print("Resgate terrestre enviado ao local.")
-            pontos = 100
-
-        case 1 if local == "Floresta":
-            print("Resgate aéreo enviado ao local.")
-            pontos = 50
-
-        case 3 if local == "Floresta":
-            print("Resgate marítimo inválido!")
-            pontos = -20
-
-        #SE O LOCAL FOR MONTANHA
-        case 1 if local == "Montanha":
-            print("Resgate aéreo enviado ao local.")
-            pontos = 100
-
-        case 2 if local == "Montanha":
-            print("Resgate terrestre enviado ao local.")
-            pontos = 50
-
-        case 3 if local == "Montanha":
-            print("Resgate marítimo inválido!")
-            pontos = -20
-
-        case _:
-            pontos = 0
-
+    #PENALIDADES
+    if resgate == 3 and (local == "Floresta" or local == "Montanha"):
+        print("Resgate marítimo inválido!")
+        pontos -= 20
     if clima == "Tempestade" and resgate == 1:
         print("Tempestade! Resgate aéreo comprometido!")
         pontos -= 50
+
+    #MENSAGENS
+    if resgate == 1:
+        print("Resgate aéreo enviado ao local.")
+    elif resgate == 2:
+        print("Resgate terrestre enviado ao local.")
+    elif resgate == 3 and local == "Praia":
+        print("Resgate marítimo enviado ao local.")
 
     print(f"Pontuação resgate: {pontos}")
     return pontos
 
 
-def pontuacao_final(maxima, equip, equipe, resgate):
+def pontuacao_final(maxima: int, equip: int, equipe: int, resgate: int) ->float:
     desempenho = (equip + equipe + resgate) / 3
     return maxima * (desempenho / 100)
 
 
-def resultado(final, maxima):
+def resultado(final: float, maxima: int) ->float:
     print("=== RESULTADO ===")
     print(f"Máxima: {maxima}")
     print(f"Final: {final:.1f}")
@@ -220,8 +236,9 @@ def resultado(final, maxima):
 
 def sobre_projeto() ->None:
     print("""
-        Uso de IA + Satélite para entendimento da melhor forma de acontecer um resgate, dentro dos problemas da região e fatores meteorológicas
-            Uso de LEO para essas regiões sem conexão
-            Usar o Processo de Decisão de Markov para entendimento de como vai acontecer a situação
-        Como PDK uso uma matemática bem difícil e processamento de dados que ainda não vimos. Achamos um jeito simplificado de usar. Ele dependeria do tempo, equipe, vítimas, clima e região. 
-          """)
+        Este projeto propõe o uso de Inteligência Artificial integrada a satélites para analisar cenários de resgate, considerando fatores como clima, localização e condições das vítimas. 
+        A utilização de satélites LEO permite comunicação e coleta de dados mesmo em regiões sem conexão. 
+        O sistema se baseia no Processo de Decisão de Markov para prever e orientar as melhores ações em cada situação. 
+        Como prova de conceito (PDK), foi desenvolvido um modelo simplificado que simula essas decisões com base em variáveis como tempo, equipe e ambiente. 
+        Dessa forma, o projeto demonstra como tecnologias avançadas podem otimizar operações de resgate em cenários críticos.
+        """)
