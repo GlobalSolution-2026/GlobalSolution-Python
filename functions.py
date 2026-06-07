@@ -71,7 +71,14 @@ def escolher_equipamentos(estado_vitima: str, clima: str, vitimas_sorteadas: int
     print("2 - Drone")
     print("3 - Ambos")
 
-    equipamentos = int(input("Escolha: "))
+    while True:
+        equipamentos = input("Escolha: ").strip()
+        if not equipamentos.isdigit():
+            print("Digite apenas números.")
+            continue
+        equipamentos = int(equipamentos)
+        break
+
     pontos = 0
 
     match equipamentos:
@@ -124,7 +131,14 @@ def escolher_equipe(estado_vitima: str, quantidade_vitimas: int) -> int:
     print("1 - UBS (Unidade Básica de Saúde)")
     print("2 - USA (Unidade Avançada de Saúde)")
 
-    equipe = int(input("Escolha: "))
+    while True:
+        equipe = input("Escolha: ").strip()
+        if not equipe.isdigit():
+            print("Digite apenas números.")
+            continue
+        equipe = int(equipe)
+        break
+    
     pontos = 0
 
     if quantidade_vitimas == 3:
@@ -168,7 +182,14 @@ def forma_resgate(local: str, clima: str) -> int:
     print("2 - Terrestre")
     print("3 - Marítimo")
 
-    resgate = int(input("Escolha: "))
+    while True:
+        resgate = input("Escolha: ").strip()
+        if not resgate.isdigit():
+            print("Digite apenas números.")
+            continue
+        resgate = int(resgate)
+        break
+
     pontos = 0
     
     #LOCAL

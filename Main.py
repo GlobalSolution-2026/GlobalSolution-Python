@@ -23,7 +23,12 @@ while True:
       
       3- Acessar Menu Principal
       """)
-    opcao = int(input("Selecione uma opção de 1 a 3: "))
+    opcao = input("Selecione uma opção de 1 a 3: ").strip()
+    if not opcao.isdigit():
+        print("Digite apenas números.")
+        input("Pressione qualquer tecla para continuar... ")
+        continue
+    opcao = int(opcao)
     match opcao:
         case 1:
             sobre_projeto()
@@ -63,7 +68,12 @@ while True:
           6-Sair
           """)
     print("-" * 50)
-    opcao = int(input("Selecione uma opção de 1 a 6: "))
+    opcao = input("Selecione uma opção de 1 a 6: ").strip()
+    if not opcao.isdigit():
+        print("Digite apenas números.")
+        input("Pressione qualquer tecla para continuar... ")
+        continue
+    opcao = int(opcao)
 
     match opcao:
 
